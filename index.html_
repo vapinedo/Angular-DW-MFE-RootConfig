@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src *  data: blob: 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * data: blob: 'unsafe-inline'; font-src * data: blob: 'unsafe-inline';">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Your application</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="importmap-type" content="systemjs-importmap">
+  <script type="systemjs-importmap">
+      {
+        "imports": {
+		  "login": "http://localhost:4202/main.js",
+		  "navbar": "http://localhost:4300/main.js",
+          "app1": "http://localhost:4201/main.js",		  
+          "single-spa": "https://cdnjs.cloudflare.com/ajax/libs/single-spa/4.3.5/system/single-spa.min.js"          
+        }
+      }
+    </script>
+
+  <!-- Child Callings  -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/single-spa/4.3.5/system/single-spa.min.js"
+    as="script" crossorigin="anonymous" />
+  <script src='https://unpkg.com/core-js-bundle@3.1.4/minified.js'></script>
+  <script src="https://unpkg.com/zone.js"></script>
+  <script src="https://unpkg.com/import-map-overrides@1.6.0/dist/import-map-overrides.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.0.0/system.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.0.0/extras/amd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.0.0/extras/named-exports.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/4.0.0/extras/named-register.min.js"></script>
+
+</head>
+
+<body>
+  <script>
+    System.import('single-spa').then(function (singleSpa) {
+
+      singleSpa.registerApplication(
+        'navbar',
+        function () {
+          return System.import('navbar');
+        },
+        function (location) {
+          if (localStorage.getItem('sesion')) {
+            console.log('entro por el si');
+            if (location.pathname.startsWith('/login')) {
+              var myNode = document.getElementById("portal");
+              if (myNode) {
+                myNode.innerHTML = '';
+              }
+              return false;
+            } else {
+              return true;
+            }
+
+          } else {
+            console.log('entro por el no, no tiene sesion');
+            singleSpa.navigateToUrl('/login');
+          }
+        }
+      );
+
+      singleSpa.registerApplication(
+        'app1',
+        function () {
+          return System.import('app1');
+        },
+        function (location) {
+          return location.pathname.startsWith('/app1');
+        }
+      );
+
+
+      singleSpa.registerApplication(
+        'login',
+        function () {
+          return System.import('login');
+        },
+        function (location) {
+          return location.pathname.startsWith('/login');
+        }
+      );
+      singleSpa.start();
+    })
+  </script>
+  <import-map-overrides-full></import-map-overrides-full>
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
+  <script src="assets/css/bootstrap/js/popper.min.js"></script>
+  <script src="assets/css/bootstrap/js/bootstrap.min.js"></script>
+
+  <script src="assets/js/webchat.js" type="text/javascript"></script>
+  <script src="assets/js/encrypter.js" type="text/javascript"></script>
+
+
+  <script src="assets/js/cryptojs/aes.js" type="text/javascript"></script>
+  <script src="assets/js/cryptojs/CryptoJSCipher.js" type="text/javascript"></script>
+  <script src="assets/js/cryptojs/cryptoJS-v3.1.2.js" type="text/javascript"></script>
+  <script src="assets/js/preloader.min.js" type="text/javascript"></script>
+
+</body>
+
+</html>
